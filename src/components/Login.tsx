@@ -2,7 +2,12 @@ import { useState } from "react";
 import TextInput from "./TextInput";
 import { Jellyfin, Api } from "@jellyfin/sdk";
 
-const jellyfin = new Jellyfin({
+export const localStorageKeys = {
+  address: "address",
+  accessToken: "accessToken",
+};
+
+export const jellyfinInfo = new Jellyfin({
   clientInfo: {
     name: "Velella",
     version: "1.0.0",
@@ -29,9 +34,16 @@ export default function Login(Props: LoginProps) {
       return;
     }
     try {
-      const api = jellyfin.createApi(address);
+      const api = jellyfinInfo.createApi(address);
 
-      await api.authenticateUserByName(user, password);
+      const auth = await api.authenticateUserByName(user, password);
+
+      if (!auth.data.AccessToken) {
+        return;
+      }
+
+      localStorage.setItem(localStorageKeys.address, address);
+      localStorage.setItem(localStorageKeys.accessToken, auth.data.AccessToken);
 
       setJellyfinAPI(api);
     } catch (e) {

@@ -1,12 +1,24 @@
 import { useState } from "react";
 import Dashboard from "./components/Dashboard";
-import Login from "./components/Login";
+import Login, { jellyfinInfo, localStorageKeys } from "./components/Login";
 import { Api } from "@jellyfin/sdk";
 
 function App() {
-  //TODO
-  // try to recreate the api via JWTs?
-  const [jellyfinAPI, setJellyfinAPI] = useState<null | Api>(null);
+  const attemptToMakeAPI = (): null | Api => {
+    const address = localStorage.getItem(localStorageKeys.address);
+
+    const accessToken = localStorage.getItem(localStorageKeys.accessToken);
+
+    if (!address || !accessToken) {
+      return null;
+    }
+
+    return jellyfinInfo.createApi(address, accessToken);
+  };
+
+  const [jellyfinAPI, setJellyfinAPI] = useState<null | Api>(
+    attemptToMakeAPI(),
+  );
   console.log(jellyfinAPI);
 
   return (
