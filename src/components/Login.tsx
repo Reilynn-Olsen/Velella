@@ -1,22 +1,7 @@
 import { useState } from "react";
 import TextInput from "./TextInput";
-import { Jellyfin, Api } from "@jellyfin/sdk";
-
-export const localStorageKeys = {
-  address: "address",
-  accessToken: "accessToken",
-};
-
-export const jellyfinInfo = new Jellyfin({
-  clientInfo: {
-    name: "Velella",
-    version: "1.0.0",
-  },
-  deviceInfo: {
-    name: "Velella",
-    id: "velella-web-client",
-  },
-});
+import { Api } from "@jellyfin/sdk";
+import { jellyfinInfo, localStorageKeys } from "../jellyfinAPIConfig";
 
 type LoginProps = {
   setJellyfinAPI: (a: Api) => void;

@@ -11,7 +11,14 @@
   },
   "dependencies": {
     "@jellyfin/sdk": "^0.11.0",
+    "@mantine/carousel": "^7.17.4",
+    "@mantine/core": "^7.17.4",
+    "@mantine/hooks": "^7.17.4",
     "@tailwindcss/vite": "^4.1.4",
+    "embla-carousel-react": "^7.1.0",
+    "postcss": "^8.5.3",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.1.4"
