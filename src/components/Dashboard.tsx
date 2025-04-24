@@ -23,7 +23,9 @@ export default function Dashboard() {
       const latestMedia = await recentLibraryApi.getLatestMedia();
 
       setLatestAlbums(
-        latestMedia.data.filter((el) => el.Type === "MusicAlbum"),
+        latestMedia.data.filter(
+          (el) => el.Type === "MusicAlbum" && el?.Artists?.[0] !== "Kanye West",
+        ),
       );
 
       const itemsApi = getItemsApi(jellyfinAPI);

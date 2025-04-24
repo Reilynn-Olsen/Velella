@@ -1,35 +1,32 @@
 import { useState, useRef } from "react";
 import usePlaySong from "../helperFunctions/PlaySong";
 import { useSongCollectionContext } from "../songCollection-context";
+import { usePlayPauseStore } from "../playPauseStore";
 
 export default function AudioPlayer() {
+  const isPlaying = usePlayPauseStore((s) => s.isPlaying);
+  const setPlay = usePlayPauseStore((s) => s.setPlay);
+  const setPause = usePlayPauseStore((s) => s.setPause);
   const { playSong } = usePlaySong();
   const { songCollection, setSongCollection } = useSongCollectionContext();
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
 
   const togglePlayPause = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
+        setPause();
       } else {
         audioRef.current.play();
+        setPlay();
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       setCurrentTime(audioRef.current.currentTime);
-    }
-  };
-
-  const handleDurationChange = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
     }
   };
 
@@ -85,12 +82,10 @@ export default function AudioPlayer() {
           id="audio-player"
           ref={audioRef}
           onTimeUpdate={handleTimeUpdate}
-          onLoadedMetadata={handleDurationChange}
           className="w-full"
         />
         <div className="flex justify-between text-xs text-neutral-400">
           <span>{Math.floor(currentTime)}s</span>
-          <span>{Math.floor(duration)}s</span>
         </div>
       </div>
     </div>

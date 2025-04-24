@@ -5,8 +5,10 @@ import { BaseItemDto } from "@jellyfin/sdk/lib/generated-client";
 import { getItemsApi } from "@jellyfin/sdk/lib/utils/api/items-api";
 import usePlaySong from "../helperFunctions/PlaySong";
 import { useSongCollectionContext } from "../songCollection-context";
+import { usePlayPauseStore } from "../playPauseStore";
 
 export default function Album() {
+  const setPlay = usePlayPauseStore((s) => s.setPlay);
   const { id } = useParams();
   const { jellyfinAPI } = useJellyfin();
   const { songCollection, setSongCollection } = useSongCollectionContext();
@@ -58,6 +60,7 @@ export default function Album() {
       currentIndex,
     });
 
+    setPlay();
     playSong(track);
   };
 
