@@ -1,12 +1,17 @@
-import { useState } from "react";
 import Dashboard from "./components/Dashboard";
+import { useState } from "react";
 import Login from "./components/Login";
 import { Api } from "@jellyfin/sdk";
 import { localStorageKeys, jellyfinInfo } from "./jellyfinAPIConfig";
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
-import Sidebar from "./components/Sidebar";
-import { SearchBar } from "./components/SearchBar";
+import { BrowserRouter, Routes, Route } from "react-router";
+import { JellyfinContext } from "./jellyfin-context";
+import { songCollectionContext } from "./songCollection-context";
+import MainLayout from "./components/MainLayout";
+import Album from "./components/Album";
+import Artist from "./components/Artist";
+import { collection } from "./types";
 
 function App() {
   const attemptToMakeAPI = (): null | Api => {
@@ -20,27 +25,34 @@ function App() {
 
     return jellyfinInfo.createApi(address, accessToken);
   };
-
-  const [jellyfinAPI, setJellyfinAPI] = useState<null | Api>(
+  const [jellyfinAPI, setJellyfinAPI] = useState<Api | null>(
     attemptToMakeAPI(),
   );
+  const [songCollection, setSongCollection] = useState<collection | null>(null);
 
   return (
-    <MantineProvider>
-      <div className="text-white  bg-gradient-to-r from-neutral-800 to-neutral-950 ">
-        {jellyfinAPI ? (
-          <div className="flex h-screen bg-neutral-950 text-white font-sans">
-            <Sidebar />
-            <div className="flex-1 p-8 bg-gradient-to-b from-neutral-900 to-neutral-950 overflow-y-auto">
-              <SearchBar />
-              <Dashboard jellyfinAPI={jellyfinAPI} />
+    <JellyfinContext.Provider value={{ jellyfinAPI, setJellyfinAPI }}>
+      <songCollectionContext.Provider
+        value={{ songCollection, setSongCollection }}
+      >
+        <MantineProvider>
+          <div className="text-white  bg-gradient-to-r from-neutral-800 to-neutral-950 ">
+            <div className="flex h-screen bg-neutral-950 text-white font-sans">
+              <BrowserRouter>
+                <Routes>
+                  <Route Component={MainLayout}>
+                    <Route path="/" Component={Dashboard} />
+                    <Route path="/Album/:id" Component={Album} />
+                    <Route path="/Artist/:id" Component={Artist} />
+                  </Route>
+                  <Route path="/Login" Component={Login} />
+                </Routes>
+              </BrowserRouter>
             </div>
           </div>
-        ) : (
-          <Login setJellyfinAPI={(a: Api) => setJellyfinAPI(a)} />
-        )}
-      </div>
-    </MantineProvider>
+        </MantineProvider>
+      </songCollectionContext.Provider>
+    </JellyfinContext.Provider>
   );
 }
 

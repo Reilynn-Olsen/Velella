@@ -1,18 +1,21 @@
 import { useState } from "react";
-import TextInput from "./TextInput";
-import { Api } from "@jellyfin/sdk";
 import { jellyfinInfo, localStorageKeys } from "../jellyfinAPIConfig";
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Title,
+  Container,
+} from "@mantine/core";
+import { useJellyfin } from "../jellyfin-context";
 
-type LoginProps = {
-  setJellyfinAPI: (a: Api) => void;
-};
-
-export default function Login(Props: LoginProps) {
+export default function Login() {
   const [address, setAddress] = useState("");
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
-  const { setJellyfinAPI } = Props;
+  const { setJellyfinAPI } = useJellyfin();
 
   const onSubmit = async () => {
     if (!address || !user || !password) {
@@ -38,30 +41,65 @@ export default function Login(Props: LoginProps) {
   };
 
   return (
-    <div className="h-screen">
-      <div className="flex  gap-5 flex-col justify-evenly items-center h-1/4">
-        <h1 className="">Log into your jellyfin server</h1>
-        <TextInput
-          value={address}
-          setValue={setAddress}
-          title="Address"
-          name="user"
-        />
-        <TextInput value={user} setValue={setUser} title="User" name="user" />
-        <TextInput
-          value={password}
-          setValue={setPassword}
-          title="Password"
-          type="password"
-          name="password"
-        />
-        <button
-          className="rounded-lg border-2 w-96 h-10 border-purple-300 text-purple-300"
-          onClick={onSubmit}
+    <div className="flex items-center justify-center min-h-screen bg-neutral-950 text-white">
+      <Container unstyled size={420} className="bg-transparent">
+        <Paper
+          unstyled
+          withBorder
+          shadow="md"
+          p={30}
+          radius="md"
+          className="bg-neutral-900 border border-neutral-800"
         >
-          Log in
-        </button>
-      </div>
+          <Title order={2} className="text-neutral-200 mb-6 text-center">
+            Log in to Streamify
+          </Title>
+          <TextInput
+            label="Server Address"
+            placeholder="https://my-music-server.com"
+            required
+            onChange={(e) => setAddress(e.target.value)}
+            value={address}
+            classNames={{
+              input: "bg-neutral-800 text-neutral-100",
+              label: "text-neutral-300",
+            }}
+          />
+          <TextInput
+            label="Username"
+            placeholder="Your Username"
+            required
+            onChange={(e) => setUser(e.target.value)}
+            value={user}
+            mt="md"
+            classNames={{
+              input: "bg-neutral-800 text-neutral-100",
+              label: "text-neutral-300",
+            }}
+          />
+          <PasswordInput
+            label="Password"
+            placeholder="Your Password"
+            required
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            mt="md"
+            classNames={{
+              input: "bg-neutral-800 text-neutral-100",
+              label: "text-neutral-300",
+            }}
+          />
+          <Button
+            fullWidth
+            mt="xl"
+            radius="xl"
+            color="violet"
+            onClick={onSubmit}
+          >
+            Log in
+          </Button>
+        </Paper>
+      </Container>
     </div>
   );
 }
